@@ -19,6 +19,7 @@ package org.dynjs.runtime;
 import org.dynjs.api.Function;
 import org.dynjs.api.Scope;
 import org.dynjs.exception.ReferenceError;
+import org.dynjs.runtime.java.MockFunction;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,7 +34,6 @@ public class DynJSTest {
     @Before
     public void setUp() {
         config = new DynJSConfig();
-//        config.enableDebug();
         dynJS = new DynJS(config);
         context = new DynThreadContext();
     }
@@ -256,6 +256,12 @@ public class DynJSTest {
         dynJS.eval(context, scriptlet);
         Object result = context.getScope().resolve("result");
         assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
+    public void testBuiltinLoading() {
+        config.addBuiltin("sample", new MockFunction());
+        check("var result = sample(true);");
     }
 
     private class BypassFunction implements Function{
